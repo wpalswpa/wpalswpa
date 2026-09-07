@@ -4,6 +4,16 @@
 
 만든 것은 다른 사람이 그대로 돌릴 수 있는 상태로 넘깁니다.
 
+## 다룬 것
+
+| 영역 | 도구 | 어디서 |
+|---|---|---|
+| 데이터 파이프라인 | Airflow · BigQuery — 외부 API 수집 데이터의 증분·멱등 배치 적재 | 데이터 엔지니어 실무 |
+| 모델링 · 검증 | Python · scikit-learn · pandas · SHAP · pytest · joblib | lol-win-prediction · dementia-screening |
+| 딥러닝 · 영상 | TensorFlow/Keras · OpenCV · Grad-CAM | stroke-facial-asymmetry-screening |
+| 음성 · LLM | Whisper · GPT API · Scikit-LLM | stt-llm-depression-screening |
+| 서빙 · 저장 | Flask · FastAPI · MySQL · SQLite | lol-win-prediction · dementia-screening |
+
 ## 작업물
 
 | 저장소 | 한 줄 | 확인할 것 |
