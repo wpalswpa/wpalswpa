@@ -1,7 +1,7 @@
 # wpalswpa
 
 저는 데이터가 쌓이는 자리에서 예측이 쓰이는 자리까지, **적재 → 학습 → 서빙 → 재학습을 한 흐름으로 잇는 개발자**입니다.
-ML에 머물지 않습니다. 새로운 기술이든 낯선 분야든, 문제가 요구하면 배워서 씁니다.
+한 분야에 머물지 않습니다. 문제가 요구하면 무엇이든 배워서 씁니다.
 
 **좋게 나온 숫자는 먼저 의심합니다.** 설명되지 않는 결과는 결과로 보지 않고, 성능이 낮아지더라도 맞는 쪽을 택합니다.
 
@@ -18,4 +18,3 @@ ML에 머물지 않습니다. 새로운 기술이든 낯선 분야든, 문제가
 | [stroke-facial-asymmetry-screening](https://github.com/wpalswpa/stroke-facial-asymmetry-screening) — 안면마비 전이학습 + Grad-CAM | 얼굴 이미지로 마비/정상 판별하는 스크리닝 보조 프로토타입 | 데이터 출처 편향을 사전 인지 → 입력 통제 → Grad-CAM으로 판단 근거 검증 |
 | [dementia-screening](https://github.com/wpalswpa/dementia-screening) — 웨어러블 라이프로그 치매 위험 스크리닝 | 활동·수면 변동성 지표 → 위험군 분류 → FastAPI 서비스 + 치매안심센터 연계 | 피처 선택 누수를 찾아 고치고 낮아진 성능을 택함 · 순열 검정 · 재학습 데이터 루프 |
 
-주력 도구: Python · pandas · scikit-learn · Airflow · BigQuery · SQL · pytest · FastAPI · TensorFlow/Keras · OpenCV · Whisper
