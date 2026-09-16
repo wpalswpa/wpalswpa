@@ -1,25 +1,22 @@
-# wpalswpa
+# 이제민 | Python · AI 응용 개발
 
-데이터가 들어오는 순간부터 예측이 쓰이고 다시 학습되기까지, **그 전체를 하나의 시스템으로 설계하는 개발자**입니다.
+음성·LLM 연구와 데이터 파이프라인 업무를 경험했습니다. 모델 점수뿐 아니라 입력 품질, 실패 처리, 다시 실행할 수 있는 검증을 함께 확인합니다.
 
-만든 것은 다른 사람이 그대로 돌릴 수 있는 상태로 넘깁니다.
+## 대표 작업
 
-## 다룬 것
-
-| 영역 | 도구 | 어디서 |
+| 프로젝트 | 문제와 구현 | 확인할 근거 · 본인 역할 |
 |---|---|---|
-| 데이터 파이프라인 | Airflow · BigQuery — 외부 API 수집 데이터의 증분·멱등 배치 적재 | 데이터 엔지니어 실무 |
-| 모델링 · 검증 | Python · scikit-learn · pandas · SHAP · pytest · joblib | lol-win-prediction · dementia-screening |
-| 딥러닝 · 영상 | TensorFlow/Keras · OpenCV · Grad-CAM | stroke-facial-asymmetry-screening |
-| 음성 · LLM | Whisper · GPT API · Scikit-LLM | stt-llm-depression-screening |
-| 서빙 · 저장 | Flask · FastAPI · MySQL · SQLite | lol-win-prediction · dementia-screening |
+| [상담 음성·LLM 연구](https://github.com/wpalswpa/stt-llm-depression-screening) | Whisper 전사와 GPT zero-shot 분류 비교 | 석사 연구·2025 KICS 발표. 전사 평가 오류 수정, 오프라인 회귀 검사 8개. 수정 후 전체 성능 재측정은 미완료 |
+| [LoL 승패 예측](https://github.com/wpalswpa/lol-win-prediction) | 10분 지표 13개로 승패 예측·근거 설명 | 4인 팀에서 분석·모델링·검증·문서 담당. 홀드아웃 정확도 0.7394와 시드 반복 평균 0.7366을 구분. 입력 계약·모델카드·재현 테스트 |
+| [TrueFit 공개 시연](https://truefit-wanted.onrender.com) | 운동 수업의 예약·이용 기록과 이견 회차별 정산. AI가 계약 원문 위치를 선택하고 서버가 인용 복원 | 3인 팀 PM: 문제 정의·서비스 규칙·검증 기준. 백엔드·DB 및 UI·배포는 팀 역할로 구분. 실제 결제·송금은 미연결 |
+| [안면마비 이미지 분류](https://github.com/wpalswpa/stroke-facial-asymmetry-screening) | ResNet50 전이학습·얼굴 크롭·Grad-CAM | 대학원 실습. 검증셋 지표와 데이터 출처 편향을 함께 설명 |
+| [라이프로그 위험군 분류](https://github.com/wpalswpa/dementia-screening) | 활동·수면 지표와 FastAPI 프로토타입 | 4인 팀장. 누수 점검·수정 과정과 174명 표본의 한계 |
 
-## 작업물
+## 경험과 도구
 
-| 저장소 | 한 줄 | 확인할 것 |
-|---|---|---|
-| [lol-win-prediction](https://github.com/wpalswpa/lol-win-prediction) — LoL 승패 예측·승리요인 분석 | 10분 시점 숫자 13개로 승패를 예측하고 왜·언제 틀리는지까지 돌려주는 서비스 ([라이브](https://p4.sumzip.com)) | 시드 10개 반복검증 0.7366±0.0081 · pytest 24개 · 입력 계약 `schema.json` · 모델카드 · 자급형 제출물 빌더 |
-| [stt-llm-depression-screening](https://github.com/wpalswpa/stt-llm-depression-screening) — 음성 기반 우울 위험 스크리닝 | Whisper 전사 → LLM zero-shot 분류, 비임상 연구 (2025 KICS 하계학술발표회) | 전사 품질(WER)을 독립 지표로 먼저 측정 · 발표 이후 재검증 섹션 |
-| [stroke-facial-asymmetry-screening](https://github.com/wpalswpa/stroke-facial-asymmetry-screening) — 안면마비 전이학습 + Grad-CAM | 얼굴 이미지로 마비/정상 판별하는 스크리닝 보조 프로토타입 | 데이터 출처 편향을 사전 인지 → 입력 통제 → Grad-CAM으로 판단 근거 검증 |
-| [dementia-screening](https://github.com/wpalswpa/dementia-screening) — 웨어러블 라이프로그 치매 위험 스크리닝 | 활동·수면 변동성 지표 → 위험군 분류 → FastAPI 서비스 + 치매안심센터 연계 | 피처 선택 누수를 찾아 고치고 낮아진 성능을 택함 · 순열 검정 · 재학습 데이터 루프 |
+- **Python · pandas · scikit-learn**: 데이터 분석, 모델 비교, 입력 검증, 회귀 검사.
+- **Whisper · GPT API · Scikit-LLM**: 음성 전사 및 텍스트 zero-shot 분류 연구.
+- **TensorFlow/Keras · OpenCV**: 이미지 전이학습과 시각적 해석 실습.
+- **Airflow · BigQuery · SQL**: 넛지헬스케어 데이터 엔지니어링 계약직(2026.05-06). 기존 DAG 구조 파악 및 신규 이벤트 적재 업무 참여.
 
+국민대학교 SW융합대학원 인공지능전공 석사. 공개 저장소에는 연구·교육 프로젝트와 팀 결과물을 구분해 기록하며, 원본 상담 데이터와 사내 코드는 포함하지 않습니다.
