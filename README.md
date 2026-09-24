@@ -9,7 +9,6 @@
 |---|---|---|
 | [TrueFit — LLM 응답 검증](https://github.com/wpalswpa/truefit-engineering-evidence) · [시연](https://truefit-wanted.onrender.com) | 계약서 쟁점 추출에서 모델은 구간만 고르고 서버가 원문을 돌려주는 설계와 오프라인 회귀 검사 | 3인 팀 AI 연동·제품 설계 |
 | [LoL 승패 예측](https://github.com/wpalswpa/lol-win-prediction) · [시연](https://p4.sumzip.com) | 10분 지표로 승패를 예측하고 근거를 설명하는 서비스, 입력 계약·모델카드·재현 테스트 | 4인 팀 분석·모델링·검증 |
-| [광안리의 역설](https://github.com/wpalswpa/busan-bigdata) | 카드 소비·상가 임대·상가 등록 자료를 겹쳐 공실이 몰린 도로를 좁힌 공공데이터 분석 | 개인 출품작 |
 | [상담 음성·LLM 연구](https://github.com/wpalswpa/stt-llm-depression-screening) | Whisper 전사와 GPT zero-shot 분류 비교, 비임상 연구 | 연구 수행 |
 | [라이프로그 위험군 분류](https://github.com/wpalswpa/dementia-screening) | 활동·수면 지표 분류 모델과 FastAPI 프로토타입, 데이터 누수 점검 | 4인 팀장 |
 | [안면마비 이미지 분류](https://github.com/wpalswpa/stroke-facial-asymmetry-screening) | ResNet50 전이학습과 Grad-CAM으로 판단 근거 확인 | 개인 실습 |
