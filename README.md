@@ -14,7 +14,7 @@
 | **[예측 결과의 해석과 입력 검증](https://github.com/wpalswpa/lol-win-prediction)** | 4인 팀 분석·모델링·검증 및 후속 서비스 기능 | [실험 보고](https://github.com/wpalswpa/lol-win-prediction/blob/main/docs/experiment_report.md) · [서빙 계약](https://github.com/wpalswpa/lol-win-prediction/blob/main/docs/serving.md) · [재현 순서](https://github.com/wpalswpa/lol-win-prediction/blob/main/docs/REPRODUCE.md) |
 | **[음성 전사 실패를 평가에 반영](https://github.com/wpalswpa/stt-llm-depression-screening)** | 석사 연구의 Whisper·LLM 비교와 후속 평가 코드 점검 | [평가 코드](https://github.com/wpalswpa/stt-llm-depression-screening/blob/main/evaluation.py) · [빈 전사 등 회귀 검사](https://github.com/wpalswpa/stt-llm-depression-screening/blob/main/tests/test_evaluation.py) |
 
-TrueFit, 아이 그림 미술관, 음성 연구의 공개 회귀 검사는 API 키나 원본 개인정보 없이 실행할 수 있습니다.
+TrueFit, 우리 아이 미술관, 음성 연구의 공개 회귀 검사는 API 키나 원본 개인정보 없이 실행할 수 있습니다.
 각 README에 실행 방법, 본인·팀의 담당 범위, 결과의 조건과 한계를 적었습니다.
 저장 응답·합성 입력 검사와 실제 모델 정확도, 과거 연구 수치와 수정 후 결과를 구분합니다.
 
