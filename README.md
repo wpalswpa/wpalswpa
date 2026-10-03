@@ -20,7 +20,7 @@ TrueFit, 우리 아이 미술관, 음성 연구의 공개 회귀 검사는 API �
 
 ## 추가 작업
 
-- [여러 LLM 의논 하네스의 판정 기록과 실패 분류](https://github.com/wpalswpa/ai-talk-harness-evidence): 개인 프로젝트. 사회자 LLM의 깨진 판정을 코드별로 분류해 대화를 이어 가고, 분석 기록의 38%를 오염시킨 CLI 입출력 결함을 고친 뒤 회귀 검사로 막았습니다. 중단 시점 자동화는 실험에서 상수 예측을 넘지 못해 도입하지 않았습니다([결정 기록](https://github.com/wpalswpa/ai-talk-harness-evidence/tree/main/docs/decisions)).
+- [여러 LLM 의논 하네스의 판정 기록과 실패 분류](https://github.com/wpalswpa/ai-talk-harness-evidence): 개인 프로젝트. 사회자 LLM의 깨진 판정을 코드별로 분류해 대화를 이어 가고, CLI 실패 배너가 참여자 발언으로 기록되던 입출력 결함을 고치고 회귀 검사로 막았습니다. 중단 시점 자동화는 실험에서 상수 예측을 넘지 못해 도입하지 않았습니다([결정 기록](https://github.com/wpalswpa/ai-talk-harness-evidence/tree/main/docs/decisions)).
 - [라이프로그 위험군 분류](https://github.com/wpalswpa/dementia-screening): 4인 팀장, 활동·수면 지표 모델과 FastAPI 프로토타입. 임상 검증 범위를 갖추지 않은 학습 프로젝트입니다.
 - [얼굴 이미지 분류와 편향 점검](https://github.com/wpalswpa/stroke-facial-asymmetry-screening): 개인 전이학습 실습. 서로 다른 이미지 출처의 영향을 포함하며 의료 진단 성능으로 해석하지 않습니다.
 
