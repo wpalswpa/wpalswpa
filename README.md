@@ -1,39 +1,95 @@
-# 이제민 | 개발 과정의 계약 검사와 LLM 출력 검증
+﻿# 이제민
 
-계약서 분석에서 LLM이 문장을 생성하는 대신 원문 구간을 선택하고, 서버가 그 인용을 원문과 대조하도록 설계했습니다.
-아이 작품과 그날의 말을 가족이 함께 간직하는 미술관 서비스에서는 화면·API·모델 워커의 경계를 API 계약으로 정하고, 계약 lint와 사본 일치 검사를 CI 설정과 통합 시험에 넣었습니다.
-승패 예측에서는 정확도뿐 아니라 계수의 부호와 경기 유형별 오차를 확인했고,
-음성 연구에서는 빈 전사가 평가에서 빠지는 오류를 수정했습니다.
+**LLM 응용 · 개발 도구 · 모델 평가**
 
-## 먼저 볼 작업
+AI 기능과 개발 도구를 만들고, 입력·출력과 실패 처리 규칙을 코드로 확인합니다.
+아래 프로젝트에 직접 맡은 일과 설계 판단, 다시 실행할 수 있는 근거를 정리했습니다.
 
-| 해결한 문제 | 맡은 일 | 판단과 구현을 확인할 근거 |
-|---|---|---|
-| **[LLM 응답을 계약 원문과 연결](https://github.com/wpalswpa/truefit-engineering-evidence)** | 3인 팀 제품 설계·AI 연동. 공개 저장소는 검증 규칙을 별도로 재현 | [구간 선택의 이유](https://github.com/wpalswpa/truefit-engineering-evidence/blob/main/docs/decisions/001-source-span-extraction.md) · [회귀 검사](https://github.com/wpalswpa/truefit-engineering-evidence/blob/main/tests/test_contract_examples.py) |
-| **[우리 아이 미술관](https://github.com/wpalswpa/kids-art-museum-serving-evidence)** | 4인 팀의 API 계약(OpenAPI)·작업 큐·낮춤 체인·CI 설정(타입 검사·계약 lint·계약 정본과 사본 일치 검사) 담당. 웹 담당자는 이 계약에서 TypeScript 타입을 생성해 사용. 팀 원본은 비공개이며 공개 저장소는 상태 규칙을 표준 라이브러리로 재현 | [낮춤과 재시도를 나눈 이유](https://github.com/wpalswpa/kids-art-museum-serving-evidence/blob/main/docs/decisions/002-downgrade-vs-retry.md) · [규칙 검사](https://github.com/wpalswpa/kids-art-museum-serving-evidence/blob/main/tests/test_fallback.py) · [실제 시험 기록](https://github.com/wpalswpa/kids-art-museum-serving-evidence/blob/main/evidence/README.md) |
-| **[예측 결과의 해석과 입력 검증](https://github.com/wpalswpa/lol-win-prediction)** | 4인 팀 분석·모델링·검증 및 후속 서비스 기능 | [실험 보고](https://github.com/wpalswpa/lol-win-prediction/blob/main/docs/experiment_report.md) · [서빙 계약](https://github.com/wpalswpa/lol-win-prediction/blob/main/docs/serving.md) · [재현 순서](https://github.com/wpalswpa/lol-win-prediction/blob/main/docs/REPRODUCE.md) |
-| **[음성 전사 실패를 평가에 반영](https://github.com/wpalswpa/stt-llm-depression-screening)** | 상담 음성 Whisper·LLM 비교 연구와 후속 평가 코드 점검 | [평가 코드](https://github.com/wpalswpa/stt-llm-depression-screening/blob/main/evaluation.py) · [빈 전사 등 회귀 검사](https://github.com/wpalswpa/stt-llm-depression-screening/blob/main/tests/test_evaluation.py) |
+## 대표 프로젝트
 
-TrueFit, 우리 아이 미술관, 음성 연구의 공개 회귀 검사는 API 키나 원본 개인정보 없이 실행할 수 있습니다.
-각 README에 실행 방법, 본인·팀의 담당 범위, 결과의 조건과 한계를 적었습니다.
-저장 응답·합성 입력 검사와 실제 모델 정확도, 과거 연구 수치와 수정 후 결과를 구분합니다.
+### 01 · [TrueFit](https://github.com/wpalswpa/truefit-engineering-evidence)
+**계약서의 근거 문장을 모델이 만들어 내지 않도록**
 
-## 추가 작업
+LLM에는 쟁점 분류와 문장 구간 선택을 맡기고, 서버가 원문에서 인용문을 추출하도록 설계했습니다. 응답 형식과 구간을 검사하며, 올바른 쟁점을 골랐는지는 별도 평가 대상으로 남겼습니다.
 
-- [여러 LLM 의논 하네스의 판정 기록과 실패 분류](https://github.com/wpalswpa/ai-talk-harness-evidence): 개인 프로젝트. 사회자 LLM의 깨진 판정을 코드별로 분류해 대화를 이어 가고, CLI 실패 배너가 참여자 발언으로 기록되던 입출력 결함을 고치고 회귀 검사로 막았습니다. 중단 시점 자동화는 실험에서 상수 예측을 넘지 못해 도입하지 않았습니다([결정 기록](https://github.com/wpalswpa/ai-talk-harness-evidence/tree/main/docs/decisions)).
-- [라이프로그 위험군 분류](https://github.com/wpalswpa/dementia-screening): 4인 팀장, 활동·수면 지표 모델과 FastAPI 프로토타입. 임상 검증 범위를 갖추지 않은 학습 프로젝트입니다.
-- [얼굴 이미지 분류와 편향 점검](https://github.com/wpalswpa/stroke-facial-asymmetry-screening): 개인 전이학습 실습. 서로 다른 이미지 출처의 영향을 포함하며 의료 진단 성능으로 해석하지 않습니다.
+`Python` `Flask` `구조화 출력` · 3인 팀의 제품 설계·AI 연동·서버 검증 담당. 공개 코드는 검증 규칙의 최소 재현입니다.
 
-## 사용한 기술과 경험
+[설계 판단](https://github.com/wpalswpa/truefit-engineering-evidence/blob/main/docs/decisions/001-source-span-extraction.md) · [검증 코드](https://github.com/wpalswpa/truefit-engineering-evidence/blob/main/validator.py) · [실행 방법](https://github.com/wpalswpa/truefit-engineering-evidence#바로-실행)
 
-| 경험 | 기술 |
-|---|---|
-| 데이터 처리 | Python · SQL · Airflow · BigQuery |
-| 모델 분석·평가 | pandas · scikit-learn · TensorFlow/Keras · OpenCV |
-| 음성·LLM 연동 | Whisper · GPT API · 구조화 출력 · 원문 구간 검증 |
-| 서비스 구현·회귀 검사 | Flask · FastAPI · SQLite · pytest · unittest |
-| 모델 서빙 운영 | 작업 큐 · 낮춤·재시도 규칙 · Node.js · Express · MariaDB |
-| API 계약·CI | OpenAPI 계약 정본 · Redocly 계약 lint · GitLab CI 설정(타입 검사·계약 lint·사본 일치) · TypeScript(Express API, Vue 운영 화면) · Vitest · Supertest |
+### 02 · [AI 의논 도구](https://github.com/wpalswpa/ai-talk-harness-evidence)
+**여러 LLM의 판정과 실패를 추적하고, 자동화할 범위를 결정**
 
-기업별 이력서와 포트폴리오에서는 맡을 업무에 맞는 사례를 골라 설명합니다.
-이 GitHub는 공통으로 확인할 수 있는 작업과 근거를 모아 둔 공간입니다.
+CLI 실패 메시지가 발언으로 저장되는 파서 경로를 고쳤습니다. 중단 시점 학습 모델은 비교 실험에서 상수 예측을 넘지 못해 운영 도입을 보류했습니다.
+
+`Python` `CLI 프로세스 연동` `SQLite` · 개인 도구의 설계·계측·검증. 공개 범위는 핵심 모듈과 검사이며 서버·실제 대화 기록은 제외했습니다.
+
+[실패 분석](https://github.com/wpalswpa/ai-talk-harness-evidence/blob/main/docs/decisions/001-failure-banner-contamination.md) · [도입 보류 판단](https://github.com/wpalswpa/ai-talk-harness-evidence/blob/main/docs/decisions/002-stop-automation-no-go.md) · [호출 코드](https://github.com/wpalswpa/ai-talk-harness-evidence/blob/main/talk/bridge.py)
+
+### 03 · [우리 아이 미술관](https://github.com/wpalswpa/kids-art-museum-serving-evidence)
+**모델의 품질 미달과 서버 장애에 서로 다른 처리 규칙 적용**
+
+화면·API·모델 워커 사이의 계약을 맡았습니다. 품질 미달은 더 단순한 결과 형식으로 전환하고, 인프라 장애는 같은 단계에서 재시도하도록 구분해 통합 시험에서 확인했습니다.
+
+`TypeScript` `Express` `OpenAPI` `MariaDB` · 4인 팀의 API·작업 처리·계약 검사 설정 담당. 모델·보호자 화면은 팀원 담당이며, 공개 코드는 처리 규칙의 최소 재현입니다.
+
+[처리 규칙과 대안](https://github.com/wpalswpa/kids-art-museum-serving-evidence/blob/main/docs/decisions/002-downgrade-vs-retry.md) · [규칙 코드](https://github.com/wpalswpa/kids-art-museum-serving-evidence/blob/main/fallback.py) · [통합 시험 기록](https://github.com/wpalswpa/kids-art-museum-serving-evidence/blob/main/evidence/README.md)
+
+### 04 · [LoL 승패 예측](https://github.com/wpalswpa/lol-win-prediction)
+**승률뿐 아니라 예측 근거와 틀리는 조건까지 확인**
+
+경기 초반 지표로 모델을 비교하고, 직관과 반대인 계수의 부호를 지표 제거 실험으로 점검했습니다. 경기 유형별 오차와 서비스 입력 계약을 함께 정리했습니다. 지표의 상관관계를 인과효과로 해석하지 않습니다.
+
+`Python` `scikit-learn` `Flask` · 4인 팀의 분석·모델링·검증과 후속 서비스 기능 담당.
+
+[실험 보고](https://github.com/wpalswpa/lol-win-prediction/blob/main/docs/experiment_report.md) · [서빙 계약](https://github.com/wpalswpa/lol-win-prediction/blob/main/docs/serving.md) · [재현 순서](https://github.com/wpalswpa/lol-win-prediction/blob/main/docs/REPRODUCE.md)
+
+### 05 · [PassFinder](https://github.com/wpalswpa/AltTab)
+**교안 PDF에서 문제를 만들어 풀고 복습하는 학습 서비스**
+
+Vercel의 읽기 전용 파일 경로 때문에 발생한 첫 화면 오류를 수정하고, 개인 AI 설정 없이 교안으로 문제를 만드는 흐름을 설계·구현했습니다. 제출 범위와 후속 v2를 구분해 화면을 보존했습니다.
+
+`JavaScript` `Express` `Vercel` · 5인 팀의 배포 장애 대응·교안 기반 생성·검증 담당. 저장소는 팀 프로젝트의 보존본입니다.
+
+[배포 장애 수정 PR](https://github.com/Snow0821/AltTab/pull/8) · [생성 코드](https://github.com/wpalswpa/AltTab/blob/main/ai-generate.js) · [배포 화면 기록](https://github.com/wpalswpa/AltTab#화면-기록)
+
+### 06 · [상담 음성 전사·LLM 분류 평가](https://github.com/wpalswpa/stt-llm-depression-screening)
+**빈 전사가 평가에서 사라지는 오류 수정**
+
+Whisper 전사와 LLM 분류를 비교하고, 후속 점검에서 빈 전사가 평균 오류율에서 누락되는 평가 코드를 고쳤습니다. 합성 입력으로 처리 규칙을 확인했으며, 전체 음성 재평가나 임상 검증 결과는 아닙니다.
+
+`Python` `Whisper` `LLM 평가` · 전사·분류 비교 연구와 후속 평가 코드 점검.
+
+[평가 코드](https://github.com/wpalswpa/stt-llm-depression-screening/blob/main/evaluation.py) · [회귀 검사](https://github.com/wpalswpa/stt-llm-depression-screening/blob/main/tests/test_evaluation.py) · [연구 범위](https://github.com/wpalswpa/stt-llm-depression-screening#문제와-접근)
+
+## 화면으로 보기
+
+<table>
+<tr>
+<td width="50%" valign="top">
+<a href="https://github.com/wpalswpa/kids-art-museum-serving-evidence"><img src="https://raw.githubusercontent.com/wpalswpa/kids-art-museum-serving-evidence/main/evidence/sample-museum.jpg" alt="우리 아이 미술관 팀 서비스의 견본 전시실" width="420"></a><br>
+<strong>우리 아이 미술관</strong><br>
+팀 서비스의 견본 전시실. 제 담당은 API·작업 처리입니다.
+</td>
+<td width="50%" valign="top">
+<a href="https://github.com/wpalswpa/AltTab#화면-기록"><img src="https://raw.githubusercontent.com/wpalswpa/AltTab/f49a1e153b99852be63b7af395f5e6a63dcad2bd/docs/screenshots/v2-list.png" alt="PassFinder 후속 v2의 배포 시험 목록" width="420"></a><br>
+<strong>PassFinder</strong><br>
+후속 v2 팀 서비스 화면. 저장소에서 제출 당시 화면도 볼 수 있습니다.
+</td>
+</tr>
+</table>
+
+## 사용한 기술
+
+- **API·데이터:** Python, TypeScript, SQL, Express, Flask, FastAPI, SQLite, MariaDB
+- **모델·평가:** scikit-learn, pandas, Whisper, 구조화 출력, 원문 인용 검증
+- **검사·자동화:** pytest, unittest, Vitest, Playwright, GitHub Actions, GitLab CI 설정
+
+프로젝트의 코드·검사 작성에는 AI 코딩 도구를 활용했습니다. 문제 정의·설계 판단·검증과 팀원 담당 범위는 각 저장소에서 구분해 설명합니다.
+
+<details>
+<summary>이전 분석·학습 프로젝트</summary>
+
+- [활동·수면 지표의 위험군 분류](https://github.com/wpalswpa/dementia-screening): 4인 팀장, 데이터 누수 점검과 FastAPI 프로토타입. 임상 검증을 수행한 서비스는 아닙니다.
+- [얼굴 이미지 분류와 편향 점검](https://github.com/wpalswpa/stroke-facial-asymmetry-screening): 개인 전이학습 실습. 이미지 출처 차이와 검증 한계를 함께 기록했습니다.
+
+</details>
