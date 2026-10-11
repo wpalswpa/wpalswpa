@@ -1,36 +1,40 @@
 # 이제민
 
-**실패 원인 추적과 자동 검사 · LLM 실행 하네스와 평가 · API 계약 검사**
+**개발 도구와 API 계약의 실패를 추적하고, 테스트·CI로 재발을 막습니다.**
 
-기준선을 먼저 정하고, 결과를 코드로 판정하고, 기준을 넘지 못하면 도입하지 않습니다. 아래 저장소마다 무엇을 바꿨는지, 어떻게 확인했는지, 어떻게 다시 돌리는지를 첫 화면에 적었습니다.
+팀원이 쓰는 계약, LLM CLI 실행 환경, 배포 오류를 다룹니다. 문제를 재현하고 선택의 이유를 기록하며, 자동화가 기준선보다 나은지 확인합니다.
 
 ## 대표 작업
 
-| 저장소 | 무엇이 바뀌었나 | 확인 방법 |
-|---|---|---|
-| [**kids-art-museum-serving-evidence**](https://github.com/wpalswpa/kids-art-museum-serving-evidence) · 작업 처리 규칙과 실행 검증 | 팀 서비스에서 맡은 처리 규칙(품질 미달은 낮춤, 장애는 같은 단계 재시도)을 API·워커·MariaDB로 실행 | GitHub Actions: 통합 시험 11개(시간 초과·503·계약 위반 응답·품질 미달·DB 중지 주입 포함)와 음성 대조, 보호자 화면(TypeScript) Playwright E2E 4개 |
-| [**ai-talk-harness-evidence**](https://github.com/wpalswpa/ai-talk-harness-evidence) · 여러 LLM CLI 실행 하네스 | CLI 실패 출력이 발언으로 저장되던 경로(10회 중 8회)를 분리. 종료 자동화는 기준선 60%를 넘지 못해(50%) 도입하지 않음 | 런타임 시험 포함 73개, Ubuntu·Windows CI, 결정 기록 2건 |
-| [**PassFinder**](https://github.com/wpalswpa/AltTab) · 팀 서비스의 배포 오류 | 서버리스 배포의 첫 화면 500(읽기 전용 경로에 폴더 생성)을 런타임 로그로 찾아 고친 [PR](https://github.com/Snow0821/AltTab/pull/8)이 병합됨. 내가 넣은 문항 검사 함수를 동료가 만든 생성 경로도 불러 씀 | PR 본문·런타임 로그, 5인 팀 하루 행사 |
-| [**rft-instruction-following**](https://github.com/wpalswpa/rft-instruction-following) · 거부 샘플링 미세조정 | Qwen2.5-0.5B-Instruct의 형식 지시 엄격 통과율 **14.4% → 35.6% ± 6.0%p**(학습 시드 3회, 학습에 없던 주제의 시험 160문항). 시스템 프롬프트 기준선은 14.4% 그대로 | 학습 전 커밋한 성공 기준, 시드 반복·선택 규칙 비교, 산술 대조 47→46~48/60, 결정적 판정 함수·시험 |
-| [**stt-llm-depression-screening**](https://github.com/wpalswpa/stt-llm-depression-screening) · 음성 전사·LLM 분류 평가 | 음성 전사(WER·CER)와 LLM 분류(정확도·F1)를 나눠 평가. 빈 전사가 평균에서 빠지던 집계 수정 | 합성 입력 회귀 검사 8개, CI. 2025 한국통신학회 하계 발표 |
+### [LLM CLI 실행 하네스](https://github.com/wpalswpa/ai-talk-harness-evidence)
 
-## 그 밖의 작업
+두 AI 도구 사이에 답을 옮기는 일을 줄이려고 만든 개인 실행 도구의 핵심 모듈입니다. CLI 실패 출력이 발언으로 저장되던 경로를 분리하고 Windows에서 여러 줄 입력이 잘리던 경로를 stdin 전달로 고쳤습니다. 입력을 읽지 않는 CLI와 출력 파이프 대기도 시간 제한으로 종료합니다.
 
-- [TrueFit](https://github.com/wpalswpa/truefit-engineering-evidence): LLM은 문장 구간 번호만 고르고 서버가 원문에서 인용문을 만든다. 범위 밖 구간·모델이 쓴 인용문 거부 검사 10개(3인 공모전 팀, PM 겸 개발).
-- [LoL 승패 예측](https://github.com/wpalswpa/lol-win-prediction): 전처리 전 분할·학습 데이터 교차검증, 계수 부호를 지표 제거로 점검(4인 팀).
+- **검증:** 가짜 CLI와 `.CMD` 래퍼를 실행하는 회귀 검사. Windows 89 통과, Ubuntu 83 통과·6 건너뜀.
+- **판단:** 대화 종료 학습 모델은 라벨 10건에서 정확도 50%로 기준선 60%보다 낮아 도입하지 않았습니다. 실제 작업 시간 절감은 아직 측정하지 않았습니다.
+- [입력 전달·시간 제한 결정](https://github.com/wpalswpa/ai-talk-harness-evidence/blob/main/docs/decisions/003-codex-prompt-via-stdin.md) · [종료 자동화 판단](https://github.com/wpalswpa/ai-talk-harness-evidence/blob/main/docs/decisions/002-stop-automation-no-go.md)
 
-<details>
-<summary>이전 학습 프로젝트</summary>
+### [미술관 API 계약과 개발 자동화](https://github.com/wpalswpa/kids-art-museum-serving-evidence)
 
-- [활동·수면 지표의 위험군 분류](https://github.com/wpalswpa/dementia-screening): 피처 선택 누수 수정, 순열 검정(4인 팀장).
-- [얼굴 이미지 분류와 편향 점검](https://github.com/wpalswpa/stroke-facial-asymmetry-screening): 이미지 출처 편향 가능성을 기록한 전이학습 실습(개인).
+4인 팀에서 맡은 API·작업 처리 규칙을 개인 공개 재현으로 만들었습니다. 품질 미달은 한 단계 낮추고 인프라 장애는 같은 단계를 재시도합니다. OpenAPI에서 화면 타입을 생성하고 계약과 생성물의 불일치를 CI에서 찾습니다.
 
-</details>
+- **검증:** 단위 16개, 장애 주입·DB 복구 통합 13개, TypeScript 화면 Playwright E2E 4개. 시간 제한을 일부러 바꿨을 때 검사가 실패하는 역검사도 수행합니다.
+- **범위:** 팀 코드의 사본이 아닌 공개 재현입니다. 가짜 모델 서버를 사용하며 실제 모델 품질·부하 성능은 측정하지 않았습니다.
+- [타입 생성 결정](https://github.com/wpalswpa/kids-art-museum-serving-evidence/blob/main/docs/decisions/005-typed-contract.md)
 
-## 기술
+### [PassFinder 팀 배포 오류 수정](https://github.com/Snow0821/AltTab/pull/8)
 
-- **학습·평가:** PyTorch, Transformers, PEFT(LoRA), scikit-learn, Whisper, 통계 검정(McNemar·부트스트랩)
-- **API·서비스:** Python, TypeScript, FastAPI, Express, OpenAPI, MariaDB, SQLite, Docker Compose
-- **검사·자동화:** pytest, Playwright E2E, GitHub Actions, Prometheus 지표, 구조화 로그
+교안 기반 문항 생성 서비스의 첫 화면이 500으로 열리지 않았습니다. 런타임 로그의 읽기 전용 경로 오류를 확인하고 Vercel에서 임시 폴더를 사용하도록 고친 PR이 팀 저장소에 병합됐습니다. 원인 확인·수정에는 Claude Code를 사용했습니다. 동료가 만든 생성 경로도 제가 추가한 문항 검사 함수를 호출합니다.
 
-코드 작성에는 AI 코딩 도구(Claude Code·Codex)를 사용했습니다. 각 저장소의 설계 문서·결정 기록·커밋 이력에 무엇을 언제 정했는지 남겼습니다.
+## 평가·검증 사례
+
+| 작업 | 확인한 것 |
+|---|---|
+| [형식 지시 미세조정](https://github.com/wpalswpa/rft-instruction-following) | Qwen2.5-0.5B의 엄격 통과율 14.4% → 35.6%(시드 3회 평균, 160문항). 학습과 같은 지시 종류에서의 결과 |
+| [상담 음성 평가 코드](https://github.com/wpalswpa/stt-llm-depression-screening) | 빈 전사가 오류율 집계에서 빠지던 조건 수정, 합성 입력 회귀 검사 8개. 수정 뒤 연구 전체 재평가는 미실시 |
+| [TrueFit 인용 검증](https://github.com/wpalswpa/truefit-engineering-evidence) | 모델은 구간 번호를 고르고 서버가 원문 인용을 생성. 범위·입력 타입 검사 11개. 공개 시연은 중단 |
+| [LoL 승패 예측](https://github.com/wpalswpa/lol-win-prediction) | 데이터 분할·모델 비교·입력 계약 점검. 공개 검사 25 통과, 원본 데이터가 필요한 재학습 검사 2개 건너뜀 |
+
+Python · TypeScript · OpenAPI · FastAPI · Express · Docker Compose · pytest · Playwright · GitHub Actions
+
+코드와 검사 작성에는 Claude Code·Codex를 사용했습니다. 본인이 정한 문제·기준과 팀원의 구현 범위는 각 저장소의 설계·결정 기록에서 구분했습니다.
