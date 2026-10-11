@@ -1,0 +1,25 @@
+name: Profile links
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Open public evidence links without authentication
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+          import re
+          urls = sorted(set(re.findall(r'https://github\.com/[^)\s]+', Path('README.md').read_text())))
+          assert urls, 'No evidence links found'
+          for url in urls:
+              with urlopen(Request(url, headers={'User-Agent': 'profile-link-check'}), timeout=30) as response:
+                  assert response.status == 200, (url, response.status)
+                  print(response.status, url)
+          PY
