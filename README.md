@@ -1,46 +1,47 @@
 # 이제민
 
-**개발 도구와 API 계약의 실패를 추적하고, 테스트·CI로 재발을 막습니다.**
+**직접 써 보며 발견한 불편을 요구사항과 처리 규칙으로 바꾸고, 구현 결과를 다시 확인합니다.**
 
-팀원이 쓰는 계약, LLM CLI 실행 환경, 배포 오류를 다룹니다. 문제를 재현하고 선택의 이유를 기록하며, 자동화가 기준선보다 나은지 확인합니다.
+모델의 결과가 서비스 안에서 제대로 쓰이도록 설계하고 검증하는 일을 합니다. 모델을 비교해 고르고, 생성이 느리거나 실패할 때의 처리 규칙을 정하고, 결과를 시험과 측정으로 확인합니다.
 
 ## 대표 작업
 
-### [LLM CLI 실행 하네스](https://github.com/wpalswpa/ai-talk-harness-evidence)
+### [LoL 승패 예측과 핵심 승리요인 분석](https://github.com/wpalswpa/lol-win-prediction)
 
-두 AI 도구 사이에 답을 옮기는 일을 줄이려고 만든 개인 실행 도구의 핵심 모듈입니다. CLI 실패 출력이 발언으로 저장되던 경로를 분리하고 Windows에서 여러 줄 입력이 잘리던 경로를 stdin 전달로 고쳤습니다. 입력을 읽지 않는 CLI와 출력 파이프 대기도 시간 제한으로 종료합니다.
+4인 팀 프로젝트에서 분석·모델링·검증·문서와 서비스 기능을 맡았습니다. 경기 시작 10분 시점의 팀 지표 13개로 최종 승패를 예측하고, 왜 그렇게 판단했는지와 언제 틀리는지까지 보여 줍니다.
 
-- **검증:** 가짜 CLI와 `.CMD` 래퍼를 실행하는 회귀 검사. Windows 89 통과, Ubuntu 83 통과·6 건너뜀.
-- **판단:** 대화 종료 학습 모델은 라벨 10건에서 정확도 50%로 기준선 60%보다 낮아 도입하지 않았습니다. 실제 작업 시간 절감은 아직 측정하지 않았습니다.
-- [입력 전달·시간 제한 결정](https://github.com/wpalswpa/ai-talk-harness-evidence/blob/main/docs/decisions/003-codex-prompt-via-stdin.md) · [종료 자동화 판단](https://github.com/wpalswpa/ai-talk-harness-evidence/blob/main/docs/decisions/002-stop-automation-no-go.md)
+- **모델 선택:** 시험셋을 전처리보다 먼저 떼어 두고 모델 8종을 비교했습니다. 정확도가 비슷한 나이브베이즈(0.7313)와 로지스틱 회귀(0.7394) 가운데, 예측 확률의 오차를 재는 Brier 점수가 낮은 로지스틱 회귀(0.1756 대 0.2179)를 골랐습니다.
+- **해석:** 킬 차이 계수가 음수로 나와 골드 차이와의 상관(0.92)을 확인했고, 골드를 뺀 재학습에서 계수가 +0.508로 바뀌는 것을 보고 모델카드에 계수 해석 주의를 적었습니다.
+- **검증:** 공개 회귀 검사 25개 통과(원본 데이터가 필요한 재학습 검사 2개는 건너뜀), GitHub Actions. 과정 기간에 공개 운영했고 지금은 로컬에서 실행합니다.
+- [실험 보고](https://github.com/wpalswpa/lol-win-prediction/blob/main/docs/experiment_report.md) · [모델카드](https://github.com/wpalswpa/lol-win-prediction/blob/main/model_card.md)
 
-### [미술관 API 계약과 개발 자동화](https://github.com/wpalswpa/kids-art-museum-serving-evidence)
+### [우리 아이 미술관 작업 처리 규칙](https://github.com/wpalswpa/kids-art-museum-serving-evidence)
 
-4인 팀에서 맡은 API·작업 처리 규칙을 개인 공개 재현으로 만들었습니다. 품질 미달은 한 단계 낮추고 인프라 장애는 같은 단계를 재시도합니다. OpenAPI에서 화면 타입을 생성하고 계약과 생성물의 불일치를 CI에서 찾습니다.
+쌓여 가는 아이 그림을 가족 미술관 콘셉트로 보여 주는 4인 팀 프로젝트에서 API 서버·작업 큐·결과 처리 규칙을 맡았고, 그 규칙을 개인 공개 재현으로 다시 만들었습니다.
 
-- **검증:** 단위 16개, 장애 주입·DB 복구 통합 13개, TypeScript 화면 Playwright E2E 4개. 시간 제한을 일부러 바꿨을 때 검사가 실패하는 역검사도 수행합니다.
-- **범위:** 팀 코드의 사본이 아닌 공개 재현입니다. 가짜 모델 서버를 사용하며 실제 모델 품질·부하 성능은 측정하지 않았습니다.
-- [타입 생성 결정](https://github.com/wpalswpa/kids-art-museum-serving-evidence/blob/main/docs/decisions/005-typed-contract.md)
+- **규칙:** 생성 결과를 기다리지 않도록 올리는 즉시 원본 액자를 겁니다. 품질 미달은 한 단계 낮춘 결과로 대체하고, 인프라 장애만 첫 시도를 포함해 최대 3회 시도합니다.
+- **검증:** 단위 16개, 장애 주입·DB 복구 통합 13개, Playwright E2E 4개. 시간 제한을 일부러 바꾸면 실패하는 역검사도 둡니다. 가짜 모델 서버를 쓰므로 실제 생성 품질과 부하는 재지 않았습니다.
+- [원본 먼저 전시](https://github.com/wpalswpa/kids-art-museum-serving-evidence/blob/main/docs/decisions/001-original-first.md) · [낮춤과 재시도 분리](https://github.com/wpalswpa/kids-art-museum-serving-evidence/blob/main/docs/decisions/002-downgrade-vs-retry.md) · [타입 생성](https://github.com/wpalswpa/kids-art-museum-serving-evidence/blob/main/docs/decisions/005-typed-contract.md)
 
 ### [찾았슈의 계약 범위 검색과 RAG 비교](https://github.com/wpalswpa/foundshu-rag-evidence)
 
-보험 청구 준비 도구에서 이름이 비슷한 특약의 조항이 섞여 회사·상품·판본·특약으로 검색 범위를 제한했습니다. 판본이 불명확하면 근거를 붙이지 않고, 같은 특약의 제외 조항도 함께 보입니다.
+보험 약관에서 받을 수 있는 보험금을 찾아 주는 개인 프로젝트입니다. 이름이 비슷한 특약의 조항이 섞이지 않도록 회사·상품·판본·특약으로 검색 범위를 먼저 좁혔습니다.
 
-- **비교:** 자체 합성 24건 중 조항이 필요한 18건에서 완전 회수 사례가 낱말 검색 3→18건, 의미 검색 4→17건이었습니다. 한 상품의 세 특약에 집중된 검색 평가이며 답변·지급 정확도가 아닙니다.
-- **공개:** 원본 시제품 캡처, 가상 자료로 실행하는 검색 규칙, 인용문 없는 원본 평가 기록. 생성 답변은 기본 판정에서 제외했습니다.
+- **비교:** 직접 만든 합성 사례 24건(필요한 조항이 정해진 18건, 조항을 붙이면 안 되는 6건)으로 비교했습니다. 필요한 조항을 모두 찾은 사례는 낱말 검색 3→18건, 의미 검색 4→17건으로 늘었고, 다른 범위 조항이 섞인 사례는 24건에서 0건이 됐습니다.
+- **범위:** 한 상품의 세 특약에 집중한 조항 검색 평가이며, 답변이나 보험금 지급 판단의 정확도가 아닙니다.
 
-### [PassFinder 팀 배포 오류 수정](https://github.com/Snow0821/AltTab/pull/8)
+### [상담 음성 전사와 LLM 분류 평가](https://github.com/wpalswpa/stt-llm-depression-screening)
 
-교안 기반 문항 생성 서비스의 첫 화면이 500으로 열리지 않았습니다. 런타임 로그의 읽기 전용 경로 오류를 확인하고 Vercel에서 임시 폴더를 사용하도록 고친 PR이 팀 저장소에 병합됐습니다. 원인 확인·수정에는 Claude Code를 사용했습니다. 동료가 만든 생성 경로도 제가 추가한 문항 검사 함수를 호출합니다.
+학술대회에서 발표한 상담 음성 전사·LLM 분류 비교의 평가 코드입니다. 빈 전사가 오류율 평균에서 빠지고 정답 파일의 첫 구간만 읽던 처리를 고쳤고, 빈 전사·정답 누락·잘못된 입력을 확인하는 회귀 검사 8개를 붙였습니다. 비임상 연구입니다.
 
-## 평가·검증 사례
+## 그 밖의 작업
 
 | 작업 | 확인한 것 |
 |---|---|
 | [형식 지시 미세조정](https://github.com/wpalswpa/rft-instruction-following) | Qwen2.5-0.5B의 엄격 통과율 14.4% → 35.6%(시드 3회 평균, 160문항). 학습과 같은 지시 종류에서의 결과 |
-| [상담 음성 평가 코드](https://github.com/wpalswpa/stt-llm-depression-screening) | 빈 전사가 오류율 집계에서 빠지던 조건 수정, 합성 입력 회귀 검사 8개. 수정 뒤 연구 전체 재평가는 미실시 |
-| [LoL 승패 예측](https://github.com/wpalswpa/lol-win-prediction) | 데이터 분할·모델 비교·입력 계약 점검. 공개 검사 25 통과, 원본 데이터가 필요한 재학습 검사 2개 건너뜀 |
+| [PassFinder 팀 배포 오류 수정](https://github.com/Snow0821/AltTab/pull/8) | 교안 기반 문항 생성 서비스의 첫 화면 500 오류를 런타임 로그로 확인하고, Vercel에서 임시 폴더를 쓰도록 고친 PR이 팀 저장소에 병합됨 |
+| [치매 위험 스크리닝](https://github.com/wpalswpa/dementia-screening) | 5일 교육 팀 프로젝트(팀장). 활동·수면 지표 위험군 분류와 데이터 누수 점검 |
 
-Python · TypeScript · OpenAPI · FastAPI · Express · Docker Compose · pytest · Playwright · GitHub Actions
+Python · scikit-learn · Whisper · TypeScript · Express · OpenAPI · FastAPI · pytest · Playwright · GitHub Actions · Docker Compose
 
-코드와 검사 작성에는 Claude Code·Codex를 사용했습니다. 본인이 정한 문제·기준과 팀원의 구현 범위는 각 저장소의 설계·결정 기록에서 구분했습니다.
+코드와 검사 작성에는 Claude Code·Codex를 사용했습니다. 작업마다 설계서에 목표와 끝나는 조건을 먼저 적고, 결과를 시험과 측정으로 확인했습니다. 본인이 정한 문제·기준과 팀원의 구현 범위는 각 저장소의 설계·결정 기록에서 구분했습니다.
