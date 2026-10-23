@@ -39,7 +39,6 @@
 |---|---|
 | [형식 지시 미세조정](https://github.com/wpalswpa/rft-instruction-following) | Qwen2.5-0.5B의 엄격 통과율 14.4% → 35.6%(시드 3회 평균, 160문항). 학습과 같은 지시 종류에서의 결과 |
 | [상담 음성 평가 코드](https://github.com/wpalswpa/stt-llm-depression-screening) | 빈 전사가 오류율 집계에서 빠지던 조건 수정, 합성 입력 회귀 검사 8개. 수정 뒤 연구 전체 재평가는 미실시 |
-| [TrueFit 인용 검증](https://github.com/wpalswpa/truefit-engineering-evidence) | 모델은 구간 번호를 고르고 서버가 원문 인용을 생성. 범위·입력 타입 검사 11개. 공개 시연은 중단 |
 | [LoL 승패 예측](https://github.com/wpalswpa/lol-win-prediction) | 데이터 분할·모델 비교·입력 계약 점검. 공개 검사 25 통과, 원본 데이터가 필요한 재학습 검사 2개 건너뜀 |
 
 Python · TypeScript · OpenAPI · FastAPI · Express · Docker Compose · pytest · Playwright · GitHub Actions
