@@ -32,16 +32,15 @@
 
 ### [상담 음성 전사와 LLM 분류 평가](https://github.com/wpalswpa/stt-llm-depression-screening)
 
-학술대회에서 발표한 상담 음성 전사·LLM 분류 비교의 평가 코드입니다. 빈 전사가 오류율 평균에서 빠지고 정답 파일의 첫 구간만 읽던 처리를 고쳤고, 빈 전사·정답 누락·잘못된 입력을 확인하는 회귀 검사 8개를 붙였습니다. 비임상 연구입니다.
+학술대회에서 발표한 상담 음성 전사·LLM 분류 비교의 평가 코드입니다. 저는 빈 전사가 오류율 평균에서 빠지는 문제를 찾았습니다. 평가 코드 수정과 빈 전사·정답 누락·잘못된 입력을 확인하는 회귀 검사 8개 작성은 AI 코딩 도구가 수행했습니다. 비임상 연구입니다.
 
 ## 그 밖의 작업
 
 | 작업 | 확인한 것 |
 |---|---|
-| [형식 지시 미세조정](https://github.com/wpalswpa/rft-instruction-following) | Qwen2.5-0.5B의 엄격 통과율 14.4% → 35.6%(시드 3회 평균, 160문항). 학습과 같은 지시 종류에서의 결과 |
 | [PassFinder 팀 배포 오류 수정](https://github.com/Snow0821/AltTab/pull/8) | 교안 기반 문항 생성 서비스의 첫 화면 500 오류를 런타임 로그로 확인하고, Vercel에서 임시 폴더를 쓰도록 고친 PR이 팀 저장소에 병합됨 |
 | [치매 위험 스크리닝](https://github.com/wpalswpa/dementia-screening) | 5일 교육 팀 프로젝트(팀장). 활동·수면 지표 위험군 분류와 데이터 누수 점검 |
 
-Python · scikit-learn · Whisper · TypeScript · Express · OpenAPI · FastAPI · pytest · Playwright · GitHub Actions · Docker Compose
+Python · scikit-learn · Whisper · TypeScript · Express · OpenAPI · pytest · Playwright · GitHub Actions · Docker Compose
 
 코드와 검사 작성에는 Claude Code·Codex를 사용했습니다. 작업마다 설계서에 목표와 끝나는 조건을 먼저 적고, 결과를 시험과 측정으로 확인했습니다. 본인이 정한 문제·기준과 팀원의 구현 범위는 각 저장소의 설계·결정 기록에서 구분했습니다.
